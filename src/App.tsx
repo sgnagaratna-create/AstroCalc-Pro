@@ -44,7 +44,7 @@ const sigma_SB = 5.670374419e-8;
 
 export default function App() {
   const [activeCategory, setActiveCategory] = useState<Category>('math');
-  const [selectedCalc, setSelectedCalc] = useState<string>('gravitational-potential');
+  const [selectedCalc, setSelectedCalc] = useState<string>('pythagorean');
   const [dualMode, setDualMode] = useState(false);
   const [selectedCalcB, setSelectedCalcB] = useState<string>('orbital-velocity');
 
@@ -61,7 +61,7 @@ export default function App() {
 
   // AI Tutor state
   const [aiMessages, setAiMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([
-    { role: 'assistant', content: "Greetings, voyager! I am your AI Math, Physics & Astrophysics Professor. Ask me anything about $E=mc^2$, quantum mechanics, general relativity, stellar evolution, thermodynamics, or cosmological equations!" }
+    { role: 'assistant', content: "Greetings, scholar! I am your AI Math, Physics & Astrophysics Professor. Ask me anything from middle school arithmetic to PhD-level general relativity, quantum mechanics, and cosmology!" }
   ]);
   const [aiInput, setAiInput] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
@@ -120,9 +120,93 @@ export default function App() {
     };
   }, []);
 
-  // Comprehensive Calculator Suite (Every major physics, quantum, and astrophysics formula)
+  // Comprehensive Calculator Suite (From Middle School Math to PhD Physics & Astrophysics)
   const calculators: CalculatorDef[] = [
-    // 1. Math & General Physics
+    // 1. Math & General Physics (Middle School to Undergraduate)
+    {
+      id: 'pythagorean',
+      name: 'Pythagorean Theorem & Distance',
+      category: 'math',
+      icon: Zap,
+      description: 'Middle school geometry: calculate hypotenuse or side length of a right triangle.',
+      formula: 'c = \\sqrt{a^2 + b^2}',
+      variables: [
+        { key: 'a', label: 'Side A (a)', unit: 'units', placeholder: 3 },
+        { key: 'b', label: 'Side B (b)', unit: 'units', placeholder: 4 },
+      ],
+      calculate: (inp) => {
+        const a = inp.a || 3;
+        const b = inp.b || 4;
+        const cVal = Math.sqrt(a * a + b * b);
+        return {
+          results: [{ label: 'Hypotenuse (c)', value: cVal.toFixed(4), unit: 'units', description: 'Triangle hypotenuse.' }],
+          steps: [`c = √(a² + b²) = √(${a * a} + ${b * b}) = ${cVal.toFixed(4)}`]
+        };
+      }
+    },
+    {
+      id: 'quadratic-solver',
+      name: 'Quadratic Equation Solver',
+      category: 'math',
+      icon: Zap,
+      description: 'High school algebra: find roots of ax² + bx + c = 0.',
+      formula: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}',
+      variables: [
+        { key: 'a', label: 'Coefficient a', unit: 'dimensionless', placeholder: 1 },
+        { key: 'b', label: 'Coefficient b', unit: 'dimensionless', placeholder: -5 },
+        { key: 'c', label: 'Coefficient c', unit: 'dimensionless', placeholder: 6 },
+      ],
+      calculate: (inp) => {
+        const a = inp.a || 1;
+        const b = inp.b || -5;
+        const cVal = inp.c || 6;
+        const discriminant = b * b - 4 * a * cVal;
+
+        if (discriminant < 0) {
+          return {
+            results: [{ label: 'Roots', value: 'Complex Roots', unit: 'i', description: 'Discriminant < 0.' }],
+            steps: [`Discriminant Δ = b² - 4ac = ${discriminant} (Complex roots)`]
+          };
+        }
+
+        const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+        const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+
+        return {
+          results: [
+            { label: 'Root x₁', value: x1.toFixed(4), unit: 'units', description: 'First solution.' },
+            { label: 'Root x₂', value: x2.toFixed(4), unit: 'units', description: 'Second solution.' }
+          ],
+          steps: [
+            `Δ = ${discriminant}`,
+            `x₁ = ${x1.toFixed(4)}, x₂ = ${x2.toFixed(4)}`
+          ]
+        };
+      }
+    },
+    {
+      id: 'circle-sphere-geom',
+      name: 'Circle & Sphere Geometry',
+      category: 'math',
+      icon: Zap,
+      description: 'Calculate circumference, area of circle, and volume of sphere.',
+      formula: 'A = \\pi r^2, \\quad V = \\frac{4}{3}\\pi r^3',
+      variables: [
+        { key: 'radius', label: 'Radius (r)', unit: 'meters', placeholder: 5 },
+      ],
+      calculate: (inp) => {
+        const r = inp.radius || 5;
+        const area = Math.PI * r * r;
+        const volume = (4 / 3) * Math.PI * Math.pow(r, 3);
+        return {
+          results: [
+            { label: 'Circle Area', value: area.toFixed(2), unit: 'm²', description: 'Surface area.' },
+            { label: 'Sphere Volume', value: volume.toFixed(2), unit: 'm³', description: 'Spherical volume.' }
+          ],
+          steps: [`Area = πr² = ${area.toFixed(2)} m²`, `Volume = (4/3)πr³ = ${volume.toFixed(2)} m³`]
+        };
+      }
+    },
     {
       id: 'gravitational-potential',
       name: 'Gravitational Potential & Force',
@@ -251,7 +335,7 @@ export default function App() {
       category: 'math',
       icon: Zap,
       description: 'Calculate remaining radioactive isotope abundance over time.',
-      formula: 'N(t) = N_0 e^{-\\lambda t} = N_0 2^{-t / t_{1/2}}',
+      formula: 'N(t) = N_0 e^{-\\lambda t}',
       variables: [
         { key: 'n0', label: 'Initial Quantity (N₀)', unit: 'atoms', placeholder: 1000 },
         { key: 'halfLife', label: 'Half-Life (t₁/₂)', unit: 'Years', placeholder: 5730 },
@@ -382,6 +466,36 @@ export default function App() {
       }
     },
     {
+      id: 'quantum-harmonic-oscillator',
+      name: 'Quantum Harmonic Oscillator Energy (PhD)',
+      category: 'quantum',
+      icon: Atom,
+      description: 'Calculate energy eigenvalues for a quantum harmonic oscillator.',
+      formula: 'E_n = \\hbar \\omega \\left(n + \\frac{1}{2}\\right)',
+      variables: [
+        { key: 'freqHz', label: 'Oscillation Frequency (ν)', unit: 'Hz', placeholder: 1e13 },
+        { key: 'n', label: 'Quantum Level (n)', unit: 'dimensionless', placeholder: 0 },
+      ],
+      calculate: (inp) => {
+        const nu = inp.freqHz || 1e13;
+        const n = Math.max(0, Math.round(inp.n || 0));
+        const omega = 2 * Math.PI * nu;
+        const E = hbar * omega * (n + 0.5);
+        const E_eV = E / 1.602176634e-19;
+
+        return {
+          results: [
+            { label: 'Energy Eigenvalue (E_n)', value: E.toExponential(3), unit: 'Joules (J)', description: 'Quantum energy level.' },
+            { label: 'Energy in Electron-Volts', value: E_eV.toFixed(4), unit: 'eV', description: 'Energy in eV.' }
+          ],
+          steps: [
+            `ω = 2πν = ${omega.toExponential(3)} rad/s`,
+            `E_n = ℏω(n + 1/2) = ${E.toExponential(3)} J`
+          ]
+        };
+      }
+    },
+    {
       id: 'compton-scattering',
       name: 'Compton Wavelength Shift',
       category: 'quantum',
@@ -393,7 +507,7 @@ export default function App() {
       ],
       calculate: (inp) => {
         const angleRad = ((inp.angleDeg || 90) * Math.PI) / 180;
-        const lambdaC = h / (m_e * c); // Compton wavelength of electron ~ 2.43e-12 m
+        const lambdaC = h / (m_e * c);
         const deltaLambda = lambdaC * (1 - Math.cos(angleRad));
 
         return {
@@ -489,7 +603,7 @@ export default function App() {
       category: 'orbital',
       icon: Rocket,
       description: 'Calculate fuel costs and transfer time between circular orbits.',
-      formula: 'a_{transfer} = \\frac{r_1 + r_2}{2}, \\quad \\Delta v = \\Delta v_1 + \\Delta v_2',
+      formula: 'a_{transfer} = \\frac{r_1 + r_2}{2}',
       variables: [
         { key: 'r1', label: 'Initial Orbit Radius (r₁)', unit: 'km', placeholder: 7000 },
         { key: 'r2', label: 'Target Orbit Radius (r₂)', unit: 'km', placeholder: 42164 },
@@ -555,27 +669,37 @@ export default function App() {
       }
     },
 
-    // 4. Cosmology & General Relativity
+    // 4. Cosmology & General Relativity (PhD Level)
     {
-      id: 'friedmann-redshift',
-      name: 'Hubble-Lemaître Law & Redshift',
+      id: 'friedmann-equation-phd',
+      name: 'Friedmann Cosmological Equation (PhD)',
       category: 'cosmology',
       icon: Globe,
-      description: 'Galactic expansion speed and wavelength shift.',
-      formula: 'v = H_0 d, \\quad z = \\frac{v}{c}',
+      description: 'Calculate expansion rate H(z) of the universe with matter, radiation, and dark energy.',
+      formula: 'H(z)^2 = H_0^2 \\left[ \\Omega_{r0}(1+z)^4 + \\Omega_{m0}(1+z)^3 + \\Omega_{\\Lambda0} \\right]',
       variables: [
-        { key: 'distance', label: 'Distance (d)', unit: 'Mpc', placeholder: 100 },
+        { key: 'z', label: 'Redshift (z)', unit: 'dimensionless', placeholder: 1.0 },
         { key: 'h0', label: 'Hubble Constant (H₀)', unit: 'km/s/Mpc', placeholder: 70 },
+        { key: 'omegaM', label: 'Matter Density (Ω_m0)', unit: 'dimensionless', placeholder: 0.3 },
+        { key: 'omegaLambda', label: 'Dark Energy Density (Ω_Λ0)', unit: 'dimensionless', placeholder: 0.7 },
       ],
       calculate: (inp) => {
-        const v = (inp.h0 || 70) * (inp.distance || 100);
-        const z = v / (c / 1000);
+        const z = Math.max(0, inp.z || 1.0);
+        const H0 = inp.h0 || 70;
+        const om = inp.omegaM || 0.3;
+        const ol = inp.omegaLambda || 0.7;
+        const or = 9e-5; // radiation density parameter today
+
+        const Hz = H0 * Math.sqrt(or * Math.pow(1 + z, 4) + om * Math.pow(1 + z, 3) + ol);
+
         return {
           results: [
-            { label: 'Recessional Velocity', value: v.toLocaleString(), unit: 'km/s', description: 'Expansion speed.' },
-            { label: 'Redshift (z)', value: z.toFixed(4), unit: 'z', description: 'Shift parameter.' }
+            { label: 'Hubble Parameter H(z)', value: Hz.toFixed(2), unit: 'km/s/Mpc', description: 'Expansion rate at redshift z.' }
           ],
-          steps: [`v = ${v.toLocaleString()} km/s`, `z = ${z.toFixed(4)}`]
+          steps: [
+            `H(z) = H₀ √(Ω_r(1+z)⁴ + Ω_m(1+z)³ + Ω_Λ)`,
+            `H(${z}) = ${Hz.toFixed(2)} km/s/Mpc`
+          ]
         };
       }
     },
@@ -594,6 +718,30 @@ export default function App() {
         return {
           results: [{ label: 'Schwarzschild Radius', value: rs.toFixed(2), unit: 'km', description: 'Event horizon size.' }],
           steps: [`r_s = ${rs.toFixed(2)} km`]
+        };
+      }
+    },
+    {
+      id: 'hawking-temperature',
+      name: 'Hawking Black Hole Temperature (PhD)',
+      category: 'cosmology',
+      icon: Atom,
+      description: 'Calculate quantum Hawking radiation temperature of a black hole.',
+      formula: 'T_H = \\frac{\\hbar c^3}{8 \\pi G M k_B}',
+      variables: [
+        { key: 'mass', label: 'Black Hole Mass (M)', unit: 'Solar Masses', placeholder: 1.0 },
+      ],
+      calculate: (inp) => {
+        const M = (inp.mass || 1.0) * M_sun;
+        const T_h = (hbar * Math.pow(c, 3)) / (8 * Math.PI * G * M * k_B);
+
+        return {
+          results: [
+            { label: 'Hawking Temperature (T_H)', value: T_h.toExponential(3), unit: 'Kelvin (K)', description: 'Thermal radiation temperature.' }
+          ],
+          steps: [
+            `T_H = ℏc³ / (8πG M k_B) = ${T_h.toExponential(3)} K`
+          ]
         };
       }
     },
@@ -634,33 +782,6 @@ export default function App() {
       }
     },
     {
-      id: 'cosmological-scale-factor',
-      name: 'Cosmological Scale Factor & Redshift',
-      category: 'cosmology',
-      icon: Globe,
-      description: 'Relates cosmological scale factor a(t) to redshift z.',
-      formula: 'a = \\frac{1}{1 + z}',
-      variables: [
-        { key: 'z', label: 'Redshift (z)', unit: 'dimensionless', placeholder: 2.0 },
-      ],
-      calculate: (inp) => {
-        const z = Math.max(0, inp.z || 2.0);
-        const a = 1 / (1 + z);
-        const percentSize = (a * 100).toFixed(2);
-
-        return {
-          results: [
-            { label: 'Scale Factor (a)', value: a.toFixed(4), unit: 'Ratio', description: 'Size of universe relative to today (a_0 = 1).' },
-            { label: 'Universe Size Percentage', value: `${percentSize}%`, unit: '%', description: 'Physical size compared to today.' }
-          ],
-          steps: [
-            `z = ${z}`,
-            `a = 1 / (1 + z) = ${a.toFixed(4)}`
-          ]
-        };
-      }
-    },
-    {
       id: 'cmb-temperature',
       name: 'CMB Temperature Evolution',
       category: 'cosmology',
@@ -672,7 +793,7 @@ export default function App() {
       ],
       calculate: (inp) => {
         const z = Math.max(0, inp.z || 1080);
-        const T0 = 2.7255; // Present CMB temperature in K
+        const T0 = 2.7255;
         const T_z = T0 * (1 + z);
 
         return {
@@ -687,7 +808,7 @@ export default function App() {
       }
     },
 
-    // 5. Stellar Astrophysics
+    // 5. Stellar Astrophysics & Advanced PhD Astrophysics
     {
       id: 'stefan-boltzmann-lum',
       name: 'Stellar Luminosity (Stefan-Boltzmann)',
@@ -710,6 +831,32 @@ export default function App() {
       }
     },
     {
+      id: 'eddington-luminosity',
+      name: 'Eddington Luminosity Limit (PhD)',
+      category: 'stellar',
+      icon: Sun,
+      description: 'Maximum luminosity a star or accretion disk can achieve before radiation pressure overcomes gravity.',
+      formula: 'L_{ed} = \\frac{4 \\pi G M c}{\\kappa}',
+      variables: [
+        { key: 'mass', label: 'Mass (M)', unit: 'Solar Masses', placeholder: 10 },
+      ],
+      calculate: (inp) => {
+        const M = (inp.mass || 10) * M_sun;
+        const kappa = 0.04; // electron scattering opacity m^2/kg
+        const L_ed = (4 * Math.PI * G * M * c) / kappa;
+        const L_ed_solar = L_ed / L_sun;
+
+        return {
+          results: [
+            { label: 'Eddington Luminosity', value: L_ed_solar > 1e6 ? L_ed_solar.toExponential(3) : L_ed_solar.toFixed(2), unit: 'Solar Luminosities (L☉)', description: 'Max stable luminosity.' }
+          ],
+          steps: [
+            `L_ed = 4πGM,c / κ = ${L_ed_solar.toExponential(3)} L☉`
+          ]
+        };
+      }
+    },
+    {
       id: 'chandrasekhar-mass',
       name: 'Chandrasekhar Mass Limit',
       category: 'stellar',
@@ -728,56 +875,28 @@ export default function App() {
       }
     },
     {
-      id: 'main-sequence-lifetime',
-      name: 'Stellar Main Sequence Lifetime',
+      id: 'tully-fisher',
+      name: 'Tully-Fisher Relation (Galactic Astrophysics)',
       category: 'stellar',
       icon: Sun,
-      description: 'Estimate hydrogen-burning lifetime of a star.',
-      formula: 't_{MS} \\approx 10^{10} \\left(\\frac{M}{M_\\odot}\\right) \\left(/ \\frac{L}{L_\\odot}\\right)^{-1}',
+      description: 'Relates spiral galaxy luminosity to maximum rotation velocity.',
+      formula: 'L = A \\cdot v_{max}^4',
       variables: [
-        { key: 'mass', label: 'Mass (M)', unit: 'Solar Masses', placeholder: 1.0 },
-        { key: 'luminosity', label: 'Luminosity (L)', unit: 'Solar Luminosities', placeholder: 1.0 },
+        { key: 'vMax', label: 'Max Rotation Velocity (v_max)', unit: 'km/s', placeholder: 200 },
       ],
       calculate: (inp) => {
-        const M = inp.mass || 1.0;
-        const L = inp.luminosity || 1.0;
-        const t_ms = 1.0e10 * (M / L);
+        const v = inp.vMax || 200;
+        // calibration constant for L in L_sun approx 50 * v^4
+        const L = 50 * Math.pow(v, 4);
+        const L_solar = L / L_sun;
 
         return {
           results: [
-            { label: 'Main Sequence Lifetime', value: t_ms >= 1e9 ? (t_ms / 1e9).toFixed(2) : t_ms.toExponential(3), unit: t_ms >= 1e9 ? 'Billion Years (Gyr)' : 'Years', description: 'Hydrogen burning lifespan.' }
+            { label: 'Estimated Galaxy Luminosity', value: L_solar > 1000 ? L_solar.toExponential(3) : L_solar.toFixed(2), unit: 'Solar Luminosities (L☉)', description: 'Galactic mass-luminosity relation.' }
           ],
           steps: [
-            `t_MS ≈ 10¹⁰ × (M / L) = ${t_ms >= 1e9 ? (t_ms/1e9).toFixed(2) + ' Gyr' : t_ms.toExponential(3) + ' years'}`
-          ]
-        };
-      }
-    },
-    {
-      id: 'stellar-surface-gravity',
-      name: 'Stellar Surface Gravity (log g)',
-      category: 'stellar',
-      icon: Sun,
-      description: 'Calculate gravitational acceleration at stellar surface.',
-      formula: 'g = \\frac{GM}{R^2}, \\quad \\log g',
-      variables: [
-        { key: 'mass', label: 'Mass (M)', unit: 'Solar Masses', placeholder: 1.0 },
-        { key: 'radius', label: 'Radius (R)', unit: 'Solar Radii', placeholder: 1.0 },
-      ],
-      calculate: (inp) => {
-        const M = (inp.mass || 1.0) * M_sun;
-        const R = (inp.radius || 1.0) * R_sun;
-        const g = (G * M) / Math.pow(R, 2);
-        const logG = Math.log10(g);
-
-        return {
-          results: [
-            { label: 'Surface Gravity (g)', value: g.toExponential(3), unit: 'm/s²', description: 'Gravitational acceleration.' },
-            { label: 'Log g', value: logG.toFixed(2), unit: 'dex (cgs log)', description: 'Logarithmic surface gravity.' }
-          ],
-          steps: [
-            `g = GM / R² = ${g.toExponential(3)} m/s²`,
-            `log g = ${logG.toFixed(2)}`
+            `L ∝ v_max⁴`,
+            `L = ${L_solar.toExponential(3)} L☉`
           ]
         };
       }
@@ -1260,7 +1379,7 @@ export default function App() {
                 <h1 className="text-xl font-black tracking-wider bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
                   ASTROCALC PRO
                 </h1>
-                <p className="text-xs text-slate-400 tracking-wide">Universal Math, Physics & Astrophysics Suite</p>
+                <p className="text-xs text-slate-400 tracking-wide">Middle School to PhD Math, Physics & Astrophysics Suite</p>
               </div>
             </div>
 
@@ -1356,16 +1475,16 @@ export default function App() {
                     </div>
                   </div>
                   <p className="text-sm text-slate-300 leading-relaxed mb-6">
-                    Your personal professor of mathematics, physics & astrophysics. Ask questions about relativity, quantum mechanics, stellar evolution, thermodynamics, or cosmological equations.
+                    Your personal professor of mathematics, physics & astrophysics. Ask questions about algebra, calculus, relativity, quantum mechanics, stellar evolution, thermodynamics, or PhD cosmological equations.
                   </p>
 
                   <div className="space-y-2 mb-6">
                     <p className="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Suggested Questions:</p>
                     {[
-                      "Explain relativistic kinetic energy and Lorentz factor.",
-                      "How does the Ideal Gas Law govern stellar interior pressure?",
-                      "What is the physical significance of de Broglie wavelengths?",
-                      "Derive the Schwarzschild radius using general relativity."
+                      "Explain the Friedmann equation in PhD cosmology.",
+                      "How does Hawking radiation derive from general relativity and quantum mechanics?",
+                      "What is the Eddington luminosity limit for massive stars?",
+                      "Derive the quantum harmonic oscillator energy eigenvalues."
                     ].map((q, idx) => (
                       <button
                         key={idx}
@@ -1414,7 +1533,7 @@ export default function App() {
                 <form onSubmit={handleAiSend} className="flex items-center space-x-3 pt-4 border-t border-white/10">
                   <input
                     type="text"
-                    placeholder="Ask your math, physics or astrophysics question (e.g. What is E=mc^2?)..."
+                    placeholder="Ask any math, physics or astrophysics question (middle school to PhD)..."
                     value={aiInput}
                     onChange={(e) => setAiInput(e.target.value)}
                     className="flex-grow bg-slate-950/80 border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors"
@@ -1445,7 +1564,7 @@ export default function App() {
                         <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                         <input
                           type="text"
-                          placeholder="Search math, physics, orbit..."
+                          placeholder="Search math, physics, PhD..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="w-full bg-slate-950 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
