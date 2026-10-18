@@ -1,6 +1,6 @@
 {
-  "name": "AstroCalc Pro - Astronomy & Astrophysics Calculator Suite",
-  "description": "Professional astronomy and astrophysics calculation suite for orbital mechanics, cosmology, stellar physics, parallax, and Friedmann equations with AI cosmic tutor.",
+  "name": "Phycalc - Universal Physics & Astrophysics Calculator Suite",
+  "description": "Professional math, physics, quantum mechanics, and astrophysics calculation suite from middle school to PhD level with AI cosmic tutor.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

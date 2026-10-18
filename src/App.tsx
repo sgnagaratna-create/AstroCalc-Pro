@@ -1377,7 +1377,7 @@ export default function App() {
               </div>
               <div>
                 <h1 className="text-xl font-black tracking-wider bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
-                  ASTROCALC PRO
+                  PHYCALC
                 </h1>
                 <p className="text-xs text-slate-400 tracking-wide">Middle School to PhD Math, Physics & Astrophysics Suite</p>
               </div>
